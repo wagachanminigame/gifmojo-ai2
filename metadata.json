@@ -1,0 +1,5 @@
+{
+  "name": "GifMojo AI",
+  "description": "An advanced GIF creator allowing users to upload multiple images, reorder frames, customize speed, and generate AI-powered captions using Gemini.",
+  "requestFramePermissions": []
+}
