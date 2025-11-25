@@ -5,6 +5,7 @@ interface FrameCardProps {
   frame: Frame;
   index: number;
   total: number;
+  isDarkMode: boolean;
   onMoveLeft: () => void;
   onMoveRight: () => void;
   onDelete: () => void;
@@ -14,17 +15,18 @@ export const FrameCard: React.FC<FrameCardProps> = ({
   frame,
   index,
   total,
+  isDarkMode,
   onMoveLeft,
   onMoveRight,
   onDelete,
 }) => {
   return (
-    <div className="group relative bg-slate-800 rounded-xl overflow-hidden shadow-md border border-slate-700 hover:border-indigo-500/50 transition-colors">
-      <div className="absolute top-2 left-2 bg-black/60 text-white text-xs px-2 py-1 rounded backdrop-blur-sm z-10">
+    <div className={`group relative rounded-xl overflow-hidden shadow-md border transition-colors ${isDarkMode ? 'bg-slate-800 border-slate-700 hover:border-indigo-500/50' : 'bg-white border-gray-200 hover:border-indigo-400'}`}>
+      <div className={`absolute top-2 left-2 text-white text-xs px-2 py-1 rounded backdrop-blur-sm z-10 ${isDarkMode ? 'bg-black/60' : 'bg-gray-900/70'}`}>
         #{index + 1}
       </div>
       
-      <div className="aspect-square w-full overflow-hidden bg-slate-900 pattern-grid">
+      <div className={`aspect-square w-full overflow-hidden ${isDarkMode ? 'bg-slate-900 pattern-grid' : 'bg-gray-50'}`}>
         <img 
           src={frame.src} 
           alt={`Frame ${index + 1}`} 
@@ -47,7 +49,7 @@ export const FrameCard: React.FC<FrameCardProps> = ({
           <button 
             onClick={onMoveLeft}
             disabled={index === 0}
-            className="p-1.5 bg-slate-700 text-white rounded hover:bg-indigo-600 disabled:opacity-30 disabled:hover:bg-slate-700 transition-colors"
+            className={`p-1.5 text-white rounded transition-colors disabled:opacity-30 ${isDarkMode ? 'bg-slate-700 hover:bg-indigo-600 disabled:hover:bg-slate-700' : 'bg-gray-700 hover:bg-indigo-500 disabled:hover:bg-gray-700'}`}
             title="前へ"
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
@@ -56,7 +58,7 @@ export const FrameCard: React.FC<FrameCardProps> = ({
           <button 
             onClick={onMoveRight}
             disabled={index === total - 1}
-            className="p-1.5 bg-slate-700 text-white rounded hover:bg-indigo-600 disabled:opacity-30 disabled:hover:bg-slate-700 transition-colors"
+            className={`p-1.5 text-white rounded transition-colors disabled:opacity-30 ${isDarkMode ? 'bg-slate-700 hover:bg-indigo-600 disabled:hover:bg-slate-700' : 'bg-gray-700 hover:bg-indigo-500 disabled:hover:bg-gray-700'}`}
             title="次へ"
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
