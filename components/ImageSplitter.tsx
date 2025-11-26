@@ -11,7 +11,7 @@ interface ImageSplitterProps {
 export const ImageSplitter: React.FC<ImageSplitterProps> = ({ onFramesExtracted, isDarkMode }) => {
   const [sourceImage, setSourceImage] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const [splitConfig, setSplitConfig] = useState<SplitConfig>({ rows: 2, cols: 3 });
+  const [splitConfig, setSplitConfig] = useState<SplitConfig>({ rows: 2, cols: 3, autoTrim: true });
   const [isProcessing, setIsProcessing] = useState(false);
   const [isDetecting, setIsDetecting] = useState(false);
   const [previewFrames, setPreviewFrames] = useState<SplitFrame[]>([]);
@@ -30,11 +30,11 @@ export const ImageSplitter: React.FC<ImageSplitterProps> = ({ onFramesExtracted,
       setIsDetecting(true);
       try {
         const detected = await detectGridWithAi(url);
-        setSplitConfig(detected);
+        setSplitConfig(prev => ({ ...detected, autoTrim: prev.autoTrim }));
       } catch (error) {
         console.error('Auto-detection failed:', error);
         // Fallback to default
-        setSplitConfig({ rows: 2, cols: 3 });
+        setSplitConfig(prev => ({ rows: 2, cols: 3, autoTrim: prev.autoTrim }));
       } finally {
         setIsDetecting(false);
       }
@@ -315,6 +315,19 @@ export const ImageSplitter: React.FC<ImageSplitterProps> = ({ onFramesExtracted,
                 className={`w-full border rounded px-3 py-2 focus:ring-2 focus:ring-indigo-500 outline-none ${isDarkMode ? 'bg-slate-700 border-slate-600 text-white' : 'bg-white border-gray-300 text-gray-900 focus:border-indigo-500 shadow-sm'}`}
               />
             </div>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              id="autoTrim"
+              checked={splitConfig.autoTrim !== false}
+              onChange={(e) => setSplitConfig({ ...splitConfig, autoTrim: e.target.checked })}
+              className="w-4 h-4 text-indigo-600 bg-gray-100 border-gray-300 rounded focus:ring-indigo-500"
+            />
+            <label htmlFor="autoTrim" className={`text-sm font-medium ${isDarkMode ? 'text-slate-300' : 'text-gray-700'}`}>
+              余白を自動カット (Auto Trim)
+            </label>
           </div>
 
           <div className="flex gap-2">
