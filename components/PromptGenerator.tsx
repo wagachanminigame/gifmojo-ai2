@@ -63,7 +63,7 @@ export const PromptGenerator: React.FC<PromptGeneratorProps> = ({ isDarkMode }) 
   };
 
   return (
-    <div className={`rounded-xl p-6 border mb-8 transition-colors ${isDarkMode ? 'bg-slate-800 border-slate-700 shadow-xl' : 'bg-white border-gray-200 shadow-lg'}`}>
+    <div className={`rounded-xl p-4 sm:p-6 border mb-8 transition-colors ${isDarkMode ? 'bg-slate-800 border-slate-700 shadow-xl' : 'bg-white border-gray-200 shadow-lg'}`}>
       <div className="flex items-center gap-2 mb-4">
         <div className={`p-2 rounded-lg ${isDarkMode ? 'bg-yellow-500/20 text-yellow-400' : 'bg-yellow-100 text-yellow-600'}`}>
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v8"/><path d="m4.93 10.93 1.41 1.41"/><path d="M2 18h2"/><path d="M20 18h2"/><path d="m19.07 10.93-1.41 1.41"/><path d="M22 22H2"/><path d="m16 6-4 4-4-4"/><path d="M16 18a4 4 0 0 0-8 0"/></svg>
@@ -79,7 +79,7 @@ export const PromptGenerator: React.FC<PromptGeneratorProps> = ({ isDarkMode }) 
           <label className={`block text-sm font-medium mb-2 ${isDarkMode ? 'text-slate-300' : 'text-gray-700'}`}>
             どんなGIFを作りたい？
           </label>
-          <div className="flex gap-2">
+          <div className="flex flex-col sm:flex-row gap-2">
             <input
               type="text"
               value={input}
@@ -96,7 +96,7 @@ export const PromptGenerator: React.FC<PromptGeneratorProps> = ({ isDarkMode }) 
               onClick={handleGenerate} 
               isLoading={isLoading}
               disabled={!input.trim()}
-              className="whitespace-nowrap"
+              className="whitespace-nowrap w-full sm:w-auto"
             >
               プロンプト生成
             </Button>
