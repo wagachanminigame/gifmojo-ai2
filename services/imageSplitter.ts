@@ -79,7 +79,7 @@ const trimImageWhitespace = (img: HTMLImageElement): HTMLCanvasElement | HTMLIma
   let top = 0, bottom = height, left = 0, right = width;
 
   // Helper to check if a pixel is NOT white/transparent
-  // We consider "white" as R,G,B > 240 (to handle compression artifacts)
+  // We consider "white" as R,G,B > 230 (to handle compression artifacts and off-white)
   // We consider "transparent" as Alpha < 10
   const isContent = (index: number) => {
     const r = data[index];
@@ -90,8 +90,8 @@ const trimImageWhitespace = (img: HTMLImageElement): HTMLCanvasElement | HTMLIma
     // Transparent is not content
     if (a < 10) return false;
     
-    // White is not content (allow some tolerance for compression)
-    if (r > 240 && g > 240 && b > 240) return false;
+    // White is not content (allow tolerance for compression/shadows)
+    if (r > 230 && g > 230 && b > 230) return false;
     
     return true;
   };
