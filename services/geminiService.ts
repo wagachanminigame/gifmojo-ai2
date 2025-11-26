@@ -147,3 +147,36 @@ export async function reorderFramesWithAi(images: string[]): Promise<number[]> {
     throw e;
   }
 }
+
+export const generatePromptForNanoBanana = async (userInput: string): Promise<string> => {
+  try {
+    const client = getGeminiClient();
+    const model = client.getGenerativeModel({ model: "gemini-2.0-flash" });
+
+    const prompt = `
+      You are an expert at writing prompts for AI image generators (specifically Gemini Image Generation model) to create sprite sheets.
+      The user will provide a description of an animation or character (in Japanese or English).
+      
+      Your task is to convert it into a highly detailed English prompt optimized for generating a consistent sprite sheet grid.
+      
+      Key elements to include in the generated prompt:
+      - "Sprite sheet of [character/action]"
+      - "3x3 grid" or "4x4 grid" (depending on complexity, default to 3x3)
+      - "sequence showing movement"
+      - "white background" or "solid background" for easy extraction
+      - Style keywords (e.g., "pixel art", "anime style", "3d render", etc. based on user input or default to high quality 2d)
+      - "consistent character", "full body"
+      
+      User Input: "${userInput}"
+      
+      Output ONLY the English prompt. Do not include any explanations.
+    `;
+
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    return response.text().trim();
+  } catch (error) {
+    console.error("Error generating prompt:", error);
+    return "Sprite sheet of a character, 3x3 grid, white background";
+  }
+};

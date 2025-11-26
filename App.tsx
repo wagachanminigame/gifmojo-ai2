@@ -5,7 +5,7 @@ import { FrameCard } from './components/FrameCard';
 import { ImageSplitter } from './components/ImageSplitter';
 import { generateGifCaption, reorderFramesWithAi } from './services/geminiService';
 import { GuideModal } from './components/GuideModal';
-
+import { PromptGenerator } from './components/PromptGenerator';
 
 const App: React.FC = () => {
   const [frames, setFrames] = useState<Frame[]>([]);
@@ -20,7 +20,7 @@ const App: React.FC = () => {
   const [status, setStatus] = useState<ProcessingStatus>(ProcessingStatus.IDLE);
   const [aiTitle, setAiTitle] = useState<string>("");
   const [isAiLoading, setIsAiLoading] = useState(false);
-  const [isAiReordering, setIsAiReordering] = useState(false); // New state for AI reorder
+  const [isAiReordering, setIsAiReordering] = useState(false);
   const [progress, setProgress] = useState(0);
   const [isDraggingMain, setIsDraggingMain] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(() => {
@@ -28,26 +28,18 @@ const App: React.FC = () => {
     return saved === 'true';
   });
   const [isPreviewPlaying, setIsPreviewPlaying] = useState(true);
-  // Key to force re-render/reset of ImageSplitter
   const [splitterKey, setSplitterKey] = useState(0);
   
-  // Undo History
   const [history, setHistory] = useState<Frame[][]>([]);
   
-  // Custom Modal State
   const [isClearModalOpen, setIsClearModalOpen] = useState(false);
-  
-  // API Key Modal State
   const [isApiKeyModalOpen, setIsApiKeyModalOpen] = useState(false);
   const [apiKeyInput, setApiKeyInput] = useState('');
-
-  // Guide Modal State
   const [isGuideModalOpen, setIsGuideModalOpen] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const previewImgRef = useRef<HTMLImageElement>(null);
 
-  // Check for API Key on mount
   useEffect(() => {
     const storedKey = localStorage.getItem('gifmojo-api-key');
     if (!storedKey) {
@@ -75,7 +67,6 @@ const App: React.FC = () => {
     }
   };
 
-  // Toggle dark mode
   const toggleDarkMode = () => {
     setIsDarkMode(prev => {
       const newValue = !prev;
@@ -84,13 +75,11 @@ const App: React.FC = () => {
     });
   };
 
-  // Toggle preview playing
   const togglePreviewPlaying = () => {
     const img = previewImgRef.current;
     if (!img || !generatedGif) return;
     
     if (isPreviewPlaying) {
-      // Pause by replacing with a static first frame
       const canvas = document.createElement('canvas');
       const tempImg = new Image();
       tempImg.onload = () => {
@@ -105,21 +94,17 @@ const App: React.FC = () => {
       };
       tempImg.src = generatedGif;
     } else {
-      // Resume by restoring the original GIF
-      img.src = generatedGif + '?' + Date.now(); // Force reload
+      img.src = generatedGif + '?' + Date.now();
       setIsPreviewPlaying(true);
     }
   };
 
-  //  Delete preview
   const deletePreview = () => {
     setGeneratedGif(null);
     setAiTitle("");
     setIsPreviewPlaying(true);
   };
 
-  // -- Undo Functionality --
-  
   const saveHistory = () => {
     setHistory(prev => [...prev, frames]);
   };
@@ -131,17 +116,13 @@ const App: React.FC = () => {
     setHistory(prev => prev.slice(0, -1));
   };
 
-
-  // -- File Handling --
-
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     if (!files) return;
 
-    saveHistory(); // Save state before adding
+    saveHistory();
 
     const newFrames: Frame[] = [];
-    // Convert FileList to array and filter for images to fix type errors and ensure logic correctness
     const imageFiles = Array.from(files).filter((file: File) => file.type.startsWith('image/'));
     
     if (imageFiles.length === 0) return;
@@ -155,7 +136,7 @@ const App: React.FC = () => {
           newFrames.push({
             id: crypto.randomUUID(),
             src: e.target.result as string,
-            file: file as File // cast to File to satisfy type checker
+            file: file as File
           });
         }
         processedCount++;
@@ -166,7 +147,6 @@ const App: React.FC = () => {
       reader.readAsDataURL(file);
     });
     
-    // Reset input
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
@@ -190,7 +170,7 @@ const App: React.FC = () => {
     const files = Array.from(e.dataTransfer.files).filter(file => file.type.startsWith('image/'));
     if (files.length === 0) return;
 
-    saveHistory(); // Save state before adding
+    saveHistory();
 
     const newFrames: Frame[] = [];
     let processedCount = 0;
@@ -202,7 +182,7 @@ const App: React.FC = () => {
           newFrames.push({
             id: crypto.randomUUID(),
             src: e.target.result as string,
-            file: file as File // cast to File
+            file: file as File
           });
         }
         processedCount++;
@@ -214,11 +194,8 @@ const App: React.FC = () => {
     });
   };
 
-
-  // -- Frame Management --
-
   const handleFramesExtracted = (extractedFrames: Frame[]) => {
-    saveHistory(); // Save state before adding extracted frames
+    saveHistory();
     setFrames((prev) => [...prev, ...extractedFrames]);
   };
 
@@ -230,7 +207,7 @@ const App: React.FC = () => {
       return;
     }
 
-    saveHistory(); // Save state before move
+    saveHistory();
 
     const newFrames = [...frames];
     const targetIndex = direction === 'left' ? index - 1 : index + 1;
@@ -239,18 +216,15 @@ const App: React.FC = () => {
     setFrames(newFrames);
   };
 
-  // Drag and Drop Reordering
   const [draggedFrameIndex, setDraggedFrameIndex] = useState<number | null>(null);
 
   const handleFrameDragStart = (e: React.DragEvent, index: number) => {
     setDraggedFrameIndex(index);
     e.dataTransfer.effectAllowed = "move";
-    // Set a transparent image or custom drag image if needed, 
-    // but default browser behavior is usually fine for cards.
   };
 
   const handleFrameDragOver = (e: React.DragEvent, index: number) => {
-    e.preventDefault(); // Necessary to allow dropping
+    e.preventDefault();
     e.dataTransfer.dropEffect = "move";
   };
 
@@ -258,7 +232,7 @@ const App: React.FC = () => {
     e.preventDefault();
     if (draggedFrameIndex === null || draggedFrameIndex === dropIndex) return;
 
-    saveHistory(); // Save state before reorder
+    saveHistory();
 
     const newFrames = [...frames];
     const [draggedFrame] = newFrames.splice(draggedFrameIndex, 1);
@@ -268,7 +242,6 @@ const App: React.FC = () => {
     setDraggedFrameIndex(null);
   };
 
-  // Auto Reorder Functions
   const reverseFrames = () => {
     if (frames.length < 2) return;
     saveHistory();
@@ -289,7 +262,6 @@ const App: React.FC = () => {
   const handleAiReorder = async () => {
     if (frames.length < 2) return;
     
-    // Check for API Key
     const apiKey = localStorage.getItem('gifmojo-api-key');
     if (!apiKey) {
       setIsApiKeyModalOpen(true);
@@ -301,12 +273,10 @@ const App: React.FC = () => {
       const images = frames.map(f => f.src);
       const indices = await reorderFramesWithAi(images);
       
-      saveHistory(); // Save before reordering
+      saveHistory();
       
-      // Reorder frames based on indices
       const newFrames = indices.map(i => frames[i]).filter(f => f !== undefined);
       
-      // If AI returned fewer indices than frames (e.g. token limit), append remaining frames
       if (newFrames.length < frames.length) {
          const usedIds = new Set(newFrames.map(f => f.id));
          const remaining = frames.filter(f => !usedIds.has(f.id));
@@ -323,7 +293,7 @@ const App: React.FC = () => {
   };
 
   const deleteFrame = (index: number) => {
-    saveHistory(); // Save state before delete
+    saveHistory();
     const newFrames = [...frames];
     newFrames.splice(index, 1);
     setFrames(newFrames);
@@ -334,26 +304,22 @@ const App: React.FC = () => {
   };
 
   const executeClearAll = () => {
-    saveHistory(); // Save state before clear
+    saveHistory();
     setFrames([]);
     setGeneratedGif(null);
     setStatus(ProcessingStatus.IDLE);
     setAiTitle("");
-    setSplitterKey(prev => prev + 1); // Reset ImageSplitter
+    setSplitterKey(prev => prev + 1);
     setIsClearModalOpen(false);
   };
-
-
-  // -- Generation Logic --
 
   const createGif = useCallback(() => {
     if (frames.length === 0) return;
     
     setStatus(ProcessingStatus.PROCESSING);
     setGeneratedGif(null);
-    setProgress(10); // Start progress
+    setProgress(10);
 
-    // Small timeout to allow UI to update
     setTimeout(() => {
       const images = frames.map(f => f.src);
       
@@ -368,7 +334,7 @@ const App: React.FC = () => {
         interval: settings.interval,
         gifWidth: settings.width,
         gifHeight: settings.height,
-        sampleInterval: settings.quality, // Lower is better quality in gifshot, but we map 1-10 conceptually
+        sampleInterval: settings.quality,
         numFrames: frames.length,
       }, (obj) => {
         if (!obj.error) {
@@ -411,7 +377,6 @@ const App: React.FC = () => {
 
   return (
     <div className={`min-h-screen pb-20 ${isDarkMode ? 'bg-slate-900' : 'bg-gray-50'}`}>
-      {/* Header */}
       <header className={`border-b sticky top-0 z-50 ${isDarkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-gray-200 shadow-sm'}`}>
         <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -460,6 +425,17 @@ const App: React.FC = () => {
                 </svg>
               )}
             </button>
+            
+            <a 
+              href="https://gemini.google.com/app" 
+              target="_blank" 
+              rel="noreferrer" 
+              className={`text-sm font-medium transition-colors flex items-center gap-1.5 px-3 py-1.5 rounded-full border ${isDarkMode ? 'text-blue-400 hover:text-blue-300 bg-blue-500/10 hover:bg-blue-500/20 border-blue-500/20' : 'text-blue-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 border-blue-200'}`}
+            >
+              <span>Gemini</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+            </a>
+
             <a 
               href="https://labs.google.com/mixboard/projects" 
               target="_blank" 
@@ -469,25 +445,20 @@ const App: React.FC = () => {
               <span>Mixboard</span>
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
             </a>
-            <a href="https://ai.google.dev" target="_blank" rel="noreferrer" className={`text-xs transition-colors hidden sm:block ${isDarkMode ? 'text-slate-500 hover:text-slate-300' : 'text-gray-500 hover:text-gray-700'}`}>
-              Powered by Gemini
-            </a>
           </div>
         </div>
       </header>
 
       <main className="max-w-7xl mx-auto px-4 py-8 space-y-8">
         
-        {/* Image Splitter Tool */}
+        <PromptGenerator isDarkMode={isDarkMode} />
+
         <ImageSplitter key={splitterKey} onFramesExtracted={handleFramesExtracted} isDarkMode={isDarkMode} />
 
-        {/* Main Workspace */}
         <div className="grid lg:grid-cols-3 gap-8">
           
-          {/* Left Column: Frames & Controls */}
           <div className="lg:col-span-2 space-y-6">
             
-            {/* Controls Bar */}
             <div className={`p-4 rounded-xl border flex flex-wrap items-center justify-between gap-4 sticky top-20 z-40 shadow-sm ${isDarkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-gray-200'}`}>
               <div className="flex items-center gap-4">
                 <div className={`px-3 py-1 rounded-full text-sm font-medium ${isDarkMode ? 'bg-indigo-500/20 text-indigo-300' : 'bg-indigo-50 text-indigo-600'}`}>
@@ -509,9 +480,7 @@ const App: React.FC = () => {
               </div>
 
               <div className="flex items-center gap-2">
-                {/* Reorder Buttons */}
                 <div className="flex items-center gap-1 mr-2 border-r pr-3 border-gray-300 dark:border-slate-600">
-                   {/* AI Auto Reorder */}
                    <button
                     onClick={handleAiReorder}
                     disabled={frames.length < 2 || isAiReordering}
@@ -527,7 +496,6 @@ const App: React.FC = () => {
                     ) : (
                       <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>
                     )}
-                    {/* Tooltip */}
                     <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 text-xs text-white bg-black rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
                       AI自動整列
                     </span>
@@ -570,7 +538,6 @@ const App: React.FC = () => {
               </div>
             </div>
 
-            {/* Frames Grid */}
             <div 
               className={`min-h-[400px] rounded-xl border-2 border-dashed transition-colors p-6 ${
                 isDraggingMain 
@@ -626,10 +593,8 @@ const App: React.FC = () => {
             </div>
           </div>
 
-        {/* Right Column: Settings & Preview */}
         <div className="space-y-6">
           
-          {/* Settings Panel */}
           <div className={`rounded-xl p-6 border ${isDarkMode ? 'bg-slate-800 border-slate-700 shadow-xl' : 'bg-white border-gray-200 shadow-lg'}`}>
             <h2 className={`text-lg font-bold mb-4 flex items-center gap-2 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.1a2 2 0 0 1-1-1.72v-.51a2 2 0 0 1 1-1.74l-.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg>
@@ -693,7 +658,6 @@ const App: React.FC = () => {
             </div>
           </div>
 
-          {/* Preview Panel */}
           {generatedGif && (
             <div className={`rounded-xl p-6 border animate-fade-in ${isDarkMode ? 'bg-slate-800 border-slate-700 shadow-xl' : 'bg-white border-gray-200 shadow-lg'}`}>
                <div className="flex items-center justify-between mb-4">
@@ -702,7 +666,6 @@ const App: React.FC = () => {
                    プレビュー
                  </h2>
                  <div className="flex gap-2">
-                   {/* Play/Pause Button */}
                    <button
                      onClick={togglePreviewPlaying}
                      className={`p-2 rounded-lg transition-colors ${isDarkMode ? 'bg-slate-700 hover:bg-slate-600 text-indigo-400' : 'bg-gray-100 hover:bg-gray-200 text-indigo-600'}`}
@@ -719,7 +682,6 @@ const App: React.FC = () => {
                        </svg>
                      )}
                    </button>
-                   {/* Delete Button */}
                    <button
                      onClick={deletePreview}
                      className={`p-2 rounded-lg transition-colors ${isDarkMode ? 'bg-red-900/30 hover:bg-red-900/50 text-red-400' : 'bg-red-50 hover:bg-red-100 text-red-600'}`}
@@ -750,7 +712,6 @@ const App: React.FC = () => {
                  </button>
                </div>
 
-               {/* AI Features */}
                <div className={`mb-4 border rounded-lg p-3 ${isDarkMode ? 'bg-indigo-900/30 border-indigo-500/30' : 'bg-indigo-50 border-indigo-200'}`}>
                   <div className="flex items-start gap-3">
                     <div className={`mt-1 ${isDarkMode ? 'text-indigo-400' : 'text-indigo-600'}`}>
@@ -790,110 +751,82 @@ const App: React.FC = () => {
              </div>
           )}
         </div>
-      </div> {/* Close grid */}
+      </div> 
       </main>
       
-      {/* Custom Clear Confirmation Modal */}
       {isClearModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fade-in">
           <div className={`w-full max-w-md p-6 rounded-xl shadow-2xl transform transition-all ${isDarkMode ? 'bg-slate-800 border border-slate-700' : 'bg-white'}`}>
             <h3 className={`text-xl font-bold mb-4 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-              全てのデータをクリアしますか？
+              全てのフレームを削除
             </h3>
             <p className={`mb-6 ${isDarkMode ? 'text-slate-300' : 'text-gray-600'}`}>
-              アップロードした画像、抽出したフレーム、作成したGIFなど、すべてのデータが削除されます。この操作は取り消せません（元に戻す機能で復元できる場合もありますが、初期化されます）。
+              作業内容がすべて消去されます。この操作は元に戻せますが、よろしいですか？
             </p>
             <div className="flex justify-end gap-3">
               <Button 
-                variant="ghost" 
+                variant="secondary" 
                 onClick={() => setIsClearModalOpen(false)}
-                className={isDarkMode ? 'text-slate-300 hover:text-white hover:bg-slate-700' : 'text-gray-600 hover:text-gray-900'}
               >
                 キャンセル
               </Button>
               <Button 
-                variant="primary" 
+                variant="danger" 
                 onClick={executeClearAll}
-                className="bg-red-600 hover:bg-red-700 text-white border-none"
               >
-                全てクリア
+                削除する
               </Button>
             </div>
           </div>
         </div>
       )}
 
-      {/* Guide Modal */}
-      <GuideModal 
-        isOpen={isGuideModalOpen} 
-        onClose={() => setIsGuideModalOpen(false)} 
-        isDarkMode={isDarkMode}
-        onOpenApiKeySettings={() => {
-          setIsGuideModalOpen(false);
-          setIsApiKeyModalOpen(true);
-        }}
-      />
-
-      {/* API Key Modal */}
       {isApiKeyModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fade-in">
           <div className={`w-full max-w-md p-6 rounded-xl shadow-2xl transform transition-all ${isDarkMode ? 'bg-slate-800 border border-slate-700' : 'bg-white'}`}>
-            <h3 className={`text-xl font-bold mb-4 flex items-center gap-2 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-indigo-500"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"></path></svg>
-              Gemini APIキー設定
+            <h3 className={`text-xl font-bold mb-4 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+              Gemini APIキーの設定
             </h3>
             <p className={`mb-4 text-sm ${isDarkMode ? 'text-slate-300' : 'text-gray-600'}`}>
-              AI機能（画像分割、タイトル生成）を使用するには、ご自身のGoogle Gemini APIキーが必要です。
+              AI機能（タイトル生成、自動並べ替え）を使用するには、Google Gemini APIキーが必要です。
               <br />
-              <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" className="text-indigo-500 hover:underline">
-                こちらから無料で取得できます
+              <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noreferrer" className="text-indigo-500 hover:underline">
+                Google AI Studioでキーを取得
               </a>
             </p>
-            
-            <div className="mb-6">
-              <label className={`block text-sm font-medium mb-1 ${isDarkMode ? 'text-slate-400' : 'text-gray-700'}`}>
-                APIキー
-              </label>
-              <input
-                type="password"
-                value={apiKeyInput}
-                onChange={(e) => setApiKeyInput(e.target.value)}
-                placeholder="AIzaSy..."
-                className={`w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 outline-none ${isDarkMode ? 'bg-slate-700 border-slate-600 text-white' : 'bg-white border-gray-300 text-gray-900'}`}
-              />
-              <p className={`text-xs mt-1 ${isDarkMode ? 'text-slate-500' : 'text-gray-500'}`}>
-                ※キーはブラウザにのみ保存され、外部サーバーには送信されません。
-              </p>
-            </div>
-
+            <input
+              type="password"
+              value={apiKeyInput}
+              onChange={(e) => setApiKeyInput(e.target.value)}
+              placeholder="APIキーを入力..."
+              className={`w-full px-4 py-2 rounded-lg border mb-4 outline-none focus:ring-2 focus:ring-indigo-500 ${
+                isDarkMode ? 'bg-slate-700 border-slate-600 text-white' : 'bg-white border-gray-300'
+              }`}
+            />
             <div className="flex justify-between gap-3">
-              <Button 
-                variant="danger" 
-                onClick={deleteApiKey}
-                disabled={!apiKeyInput}
-                className="text-sm"
-              >
-                削除
-              </Button>
-              <div className="flex gap-3">
-                <Button 
-                  variant="ghost" 
-                  onClick={() => setIsApiKeyModalOpen(false)}
-                  className={isDarkMode ? 'text-slate-300 hover:text-white hover:bg-slate-700' : 'text-gray-600 hover:text-gray-900'}
-                >
+              {localStorage.getItem('gifmojo-api-key') && (
+                <Button variant="danger" onClick={deleteApiKey} className="mr-auto">
+                  削除
+                </Button>
+              )}
+              <div className="flex gap-2">
+                <Button variant="secondary" onClick={() => setIsApiKeyModalOpen(false)}>
                   キャンセル
                 </Button>
-                <Button 
-                  variant="primary" 
-                  onClick={saveApiKey}
-                >
-                  保存する
+                <Button onClick={saveApiKey}>
+                  保存
                 </Button>
               </div>
             </div>
           </div>
         </div>
       )}
+
+      <GuideModal 
+        isOpen={isGuideModalOpen} 
+        onClose={() => setIsGuideModalOpen(false)} 
+        isDarkMode={isDarkMode} 
+      />
     </div>
   );
 };
