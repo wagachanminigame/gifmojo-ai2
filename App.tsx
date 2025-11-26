@@ -383,8 +383,8 @@ const App: React.FC = () => {
             <div className={`p-1.5 sm:p-2 rounded-lg ${isDarkMode ? 'bg-indigo-500/20 text-indigo-400' : 'bg-indigo-100 text-indigo-600'}`}>
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
             </div>
-            <h1 className={`text-base sm:text-lg md:text-2xl font-bold tracking-tight whitespace-nowrap ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-              GifMojo <span className="text-indigo-500">AI</span>
+            <h1 className={`text-sm sm:text-lg md:text-2xl font-bold tracking-tight whitespace-nowrap ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+              <span className="hidden xs:inline">GifMojo </span><span className="text-indigo-500">AI</span>
             </h1>
           </div>
           <div className="flex items-center gap-0.5 sm:gap-1 md:gap-2 flex-shrink-0">
@@ -441,10 +441,11 @@ const App: React.FC = () => {
               href="https://labs.google.com/mixboard/projects" 
               target="_blank" 
               rel="noreferrer" 
-              className={`hidden lg:flex text-xs md:text-sm font-medium transition-colors items-center gap-1 px-2 md:px-3 py-1 rounded-full border ${isDarkMode ? 'text-indigo-400 hover:text-indigo-300 bg-indigo-500/10 hover:bg-indigo-500/20 border-indigo-500/20' : 'text-indigo-600 hover:text-indigo-700 bg-indigo-50 hover:bg-indigo-100 border-indigo-200'}`}
+              className={`text-[10px] sm:text-xs md:text-sm font-medium transition-colors flex items-center gap-0.5 sm:gap-1 px-1.5 sm:px-2 md:px-3 py-1 rounded-full border whitespace-nowrap ${isDarkMode ? 'text-indigo-400 hover:text-indigo-300 bg-indigo-500/10 hover:bg-indigo-500/20 border-indigo-500/20' : 'text-indigo-600 hover:text-indigo-700 bg-indigo-50 hover:bg-indigo-100 border-indigo-200'}`}
             >
-              <span>Mixboard</span>
-              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+              <span className="hidden min-[380px]:inline">Mixboard</span>
+              <span className="min-[380px]:hidden">Mix</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" className="sm:w-3 sm:h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
             </a>
           </div>
         </div>
