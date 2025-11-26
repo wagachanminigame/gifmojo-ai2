@@ -122,16 +122,22 @@ export const ImageSplitter: React.FC<ImageSplitterProps> = ({ onFramesExtracted,
     }
   };
 
-  // Download frames as ZIP
+  const downloadSingleFrame = (frame: SplitFrame, index: number) => {
+    const a = document.createElement('a');
+    a.href = frame.src;
+    a.download = `frame_${index + 1}.png`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  };
+
   const downloadFramesAsZip = async () => {
     if (previewFrames.length === 0) return;
 
     try {
-      // Dynamically import JSZip
       const JSZip = (await import('https://cdn.jsdelivr.net/npm/jszip@3.10.1/+esm' as any)).default;
       const zip = new (JSZip as any)();
       
-      // Add each frame to ZIP
       for (let i = 0; i < previewFrames.length; i++) {
         const frame = previewFrames[i];
         const response = await fetch(frame.src);
@@ -139,10 +145,7 @@ export const ImageSplitter: React.FC<ImageSplitterProps> = ({ onFramesExtracted,
         zip.file(`frame_${i + 1}.png`, blob);
       }
 
-      // Generate ZIP file
       const zipBlob = await zip.generateAsync({ type: 'blob' });
-      
-      // Download
       const url = URL.createObjectURL(zipBlob);
       const a = document.createElement('a');
       a.href = url;
@@ -341,11 +344,22 @@ export const ImageSplitter: React.FC<ImageSplitterProps> = ({ onFramesExtracted,
               </p>
               <div className={`grid grid-cols-4 gap-2 max-h-64 overflow-y-auto p-2 rounded ${isDarkMode ? 'bg-slate-900/50' : 'bg-gray-50 border border-gray-200'}`}>
                 {previewFrames.map((frame, index) => (
-                  <div key={frame.id} className={`relative rounded overflow-hidden ${isDarkMode ? 'bg-slate-800' : 'bg-white shadow-sm border border-gray-200'}`}>
+                  <div key={frame.id} className={`relative rounded overflow-hidden group ${isDarkMode ? 'bg-slate-800' : 'bg-white shadow-sm border border-gray-200'}`}>
                     <img src={frame.src} alt={`Frame ${index + 1}`} className="w-full" />
                     <div className={`absolute top-1 left-1 text-white text-xs px-1.5 py-0.5 rounded ${isDarkMode ? 'bg-black/60' : 'bg-indigo-600 shadow'}`}>
                       #{index + 1}
                     </div>
+                    <button
+                      onClick={() => downloadSingleFrame(frame, index)}
+                      className="absolute bottom-1 right-1 p-1.5 bg-indigo-600 text-white rounded opacity-0 group-hover:opacity-100 transition-opacity hover:bg-indigo-700"
+                      title="保存"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                      </svg>
+                    </button>
                   </div>
                 ))}
               </div>
