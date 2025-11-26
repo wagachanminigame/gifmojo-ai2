@@ -87,7 +87,7 @@ export const GuideModal: React.FC<GuideModalProps> = ({ isOpen, onClose, isDarkM
                       <span className="font-bold text-red-500">「APIキーを作成」</span>をクリックしてキーを生成・コピーします。
                     </p>
                     <div className="rounded-lg overflow-hidden border shadow-sm">
-                      <img src="/guide/google_ai_studio_apikey.png" alt="Google AI Studio" className="w-full" />
+                      <img src={`${import.meta.env.BASE_URL}guide/google_ai_studio_apikey.png`} alt="Google AI Studio" className="w-full" />
                     </div>
                   </div>
 
@@ -102,7 +102,7 @@ export const GuideModal: React.FC<GuideModalProps> = ({ isOpen, onClose, isDarkM
                           ヘッダー右上の<span className="font-bold text-indigo-500">設定ボタン</span>をクリックします。
                         </p>
                         <div className="relative h-40 rounded-lg overflow-hidden border shadow-sm">
-                          <img src="/guide/header_apikey_new.png" alt="Header Settings" className="w-full h-full object-cover object-right-top" />
+                          <img src={`${import.meta.env.BASE_URL}guide/header_apikey_new.png`} alt="Header Settings" className="w-full h-full object-cover object-right-top" />
                         </div>
                       </div>
                       <div className="space-y-2">
@@ -110,7 +110,7 @@ export const GuideModal: React.FC<GuideModalProps> = ({ isOpen, onClose, isDarkM
                           キーを貼り付けて<span className="font-bold">「保存する」</span>を押します。
                         </p>
                         <div className="relative h-40 rounded-lg overflow-hidden border shadow-sm">
-                          <img src="/guide/apikey_modal_new.png" alt="API Key Modal" className="w-full h-full object-cover object-center" />
+                          <img src={`${import.meta.env.BASE_URL}guide/apikey_modal_new.png`} alt="API Key Modal" className="w-full h-full object-cover object-center" />
                         </div>
                       </div>
                     </div>
@@ -146,7 +146,7 @@ export const GuideModal: React.FC<GuideModalProps> = ({ isOpen, onClose, isDarkM
                       画像をアップロードし、<span className="text-red-500 font-bold">行数・列数</span>を手動で入力して「フレーム抽出」を押します。
                     </p>
                     <div className="relative rounded-lg overflow-hidden border">
-                      <img src="/guide/splitter_tool.png" alt="Splitter Tool" className="w-full" />
+                      <img src={`${import.meta.env.BASE_URL}guide/splitter_tool.png`} alt="Splitter Tool" className="w-full" />
                       {/* Red Marker for Rows/Cols Inputs */}
                       <div className="absolute top-[40%] left-[20px] w-[40%] h-[15%] border-4 border-red-500 rounded bg-red-500/10"></div>
                       <div className="absolute top-[30%] left-[20px] text-red-500 font-bold text-sm bg-white/80 px-1 rounded">数値を入力</div>
@@ -160,7 +160,7 @@ export const GuideModal: React.FC<GuideModalProps> = ({ isOpen, onClose, isDarkM
                       抽出されたフレームがここに並びます。ドラッグして順番を入れ替えたり、不要なコマを削除できます。
                     </p>
                     <div className="relative rounded-lg overflow-hidden border">
-                      <img src="/guide/main_area.png" alt="Main Area" className="w-full" />
+                      <img src={`${import.meta.env.BASE_URL}guide/main_area.png`} alt="Main Area" className="w-full" />
                       {/* Red Marker for Main Area */}
                       <div className="absolute inset-4 border-4 border-red-500 border-dashed rounded bg-red-500/5"></div>
                       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-red-500 font-bold bg-white/90 px-3 py-1 rounded shadow">
