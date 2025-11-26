@@ -300,7 +300,22 @@ export const ImageSplitter: React.FC<ImageSplitterProps> = ({ onFramesExtracted,
                 min="1"
                 max="10"
                 value={splitConfig.rows}
-                onChange={(e) => setSplitConfig({ ...splitConfig, rows: parseInt(e.target.value) || 1 })}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  if (val === '') {
+                    setSplitConfig({ ...splitConfig, rows: '' as any });
+                  } else {
+                    const num = parseInt(val);
+                    if (!isNaN(num) && num >= 1 && num <= 10) {
+                      setSplitConfig({ ...splitConfig, rows: num });
+                    }
+                  }
+                }}
+                onBlur={(e) => {
+                  if (e.target.value === '' || parseInt(e.target.value) < 1) {
+                    setSplitConfig({ ...splitConfig, rows: 1 });
+                  }
+                }}
                 className={`w-full border rounded px-3 py-2 focus:ring-2 focus:ring-indigo-500 outline-none ${isDarkMode ? 'bg-slate-700 border-slate-600 text-white' : 'bg-white border-gray-300 text-gray-900 focus:border-indigo-500 shadow-sm'}`}
               />
             </div>
@@ -311,7 +326,22 @@ export const ImageSplitter: React.FC<ImageSplitterProps> = ({ onFramesExtracted,
                 min="1"
                 max="10"
                 value={splitConfig.cols}
-                onChange={(e) => setSplitConfig({ ...splitConfig, cols: parseInt(e.target.value) || 1 })}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  if (val === '') {
+                    setSplitConfig({ ...splitConfig, cols: '' as any });
+                  } else {
+                    const num = parseInt(val);
+                    if (!isNaN(num) && num >= 1 && num <= 10) {
+                      setSplitConfig({ ...splitConfig, cols: num });
+                    }
+                  }
+                }}
+                onBlur={(e) => {
+                  if (e.target.value === '' || parseInt(e.target.value) < 1) {
+                    setSplitConfig({ ...splitConfig, cols: 1 });
+                  }
+                }}
                 className={`w-full border rounded px-3 py-2 focus:ring-2 focus:ring-indigo-500 outline-none ${isDarkMode ? 'bg-slate-700 border-slate-600 text-white' : 'bg-white border-gray-300 text-gray-900 focus:border-indigo-500 shadow-sm'}`}
               />
             </div>

@@ -554,7 +554,7 @@ const App: React.FC = () => {
                 <div className="h-full flex flex-col items-center justify-center text-gray-400 min-h-[250px] sm:min-h-[350px]">
                   <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" className="sm:w-12 sm:h-12 mb-3 sm:mb-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
                   <p className="text-base sm:text-lg font-medium">ここに画像をドロップ</p>
-                  <p className="text-xs sm:text-sm mt-2">またはる</p>
+                  <p className="text-xs sm:text-sm mt-2">または</p>
                   <label className="mt-3 sm:mt-4 cursor-pointer">
                     <span className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 sm:px-6 py-2 rounded-lg text-sm sm:text-base font-medium transition-colors shadow-sm inline-block">
                       ファイルを選択
@@ -570,7 +570,7 @@ const App: React.FC = () => {
                   </label>
                 </div>
               ) : (
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 sm:gap-4">
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 sm:gap-4 justify-items-center">
                   {frames.map((frame, index) => (
                     <div
                       key={frame.id}
@@ -578,7 +578,7 @@ const App: React.FC = () => {
                       onDragStart={(e) => handleFrameDragStart(e, index)}
                       onDragOver={(e) => handleFrameDragOver(e, index)}
                       onDrop={(e) => handleFrameDrop(e, index)}
-                      className="transition-transform active:scale-95"
+                      className="transition-transform active:scale-95 w-full"
                     >
                       <FrameCard
                         frame={frame}
