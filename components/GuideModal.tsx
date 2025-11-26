@@ -179,10 +179,10 @@ export const GuideModal: React.FC<GuideModalProps> = ({ isOpen, onClose, isDarkM
             <div className="space-y-8 animate-fade-in">
               <div className={`p-6 rounded-xl border ${isDarkMode ? 'bg-indigo-900/20 border-indigo-500/30' : 'bg-indigo-50 border-indigo-100'}`}>
                 <h3 className={`text-lg font-bold mb-2 ${isDarkMode ? 'text-indigo-300' : 'text-indigo-800'}`}>
-                  🎨 Geminiで素材を作ろう！
+                  🎨 Gemini (Nano Banana Pro) で素材を作ろう！
                 </h3>
                 <p className={`${isDarkMode ? 'text-slate-300' : 'text-gray-700'}`}>
-                  GifMojo AIは、Googleの生成AI「Gemini」と連携して、GIFの素材（スプライトシート）を簡単に作ることができます。<br/>
+                  GifMojo AIは、Googleの生成AI「Gemini」の画像生成機能（Nano Banana Pro）と連携して、GIFの素材（スプライトシート）を簡単に作ることができます。<br/>
                   以下の手順で、誰でもハイクオリティな素材が作れます！
                 </p>
               </div>
@@ -214,21 +214,51 @@ export const GuideModal: React.FC<GuideModalProps> = ({ isOpen, onClose, isDarkM
                   </div>
                 </div>
 
-                {/* Step 3 */}
+                {/* Step 3: Thought Mode */}
                 <div className="flex gap-4">
                   <div className="flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-full bg-indigo-500 text-white font-bold">3</div>
                   <div className="space-y-2 flex-1">
-                    <h4 className={`font-bold text-lg ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>画像を生成</h4>
+                    <h4 className={`font-bold text-lg ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>思考モード（3 Pro 搭載）を選択</h4>
+                    <p className={`text-sm ${isDarkMode ? 'text-slate-400' : 'text-gray-600'}`}>
+                      Geminiの入力欄で、<span className="font-bold text-purple-600">「思考モード」</span>を選択します。<br/>
+                      これにより、より高品質で意図に沿った画像が生成できます。
+                    </p>
+                    <div className="rounded-lg overflow-hidden border shadow-sm">
+                      <img src={`${import.meta.env.BASE_URL}article_images/gemini_thought_mode.png`} alt="思考モード選択" className="w-full" />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Step 4: Image Tool */}
+                <div className="flex gap-4">
+                  <div className="flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-full bg-indigo-500 text-white font-bold">4</div>
+                  <div className="space-y-2 flex-1">
+                    <h4 className={`font-bold text-lg ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>「画像を作成」ツールを選択</h4>
+                    <p className={`text-sm ${isDarkMode ? 'text-slate-400' : 'text-gray-600'}`}>
+                      入力欄の<span className="font-bold">「＋」ボタン</span>から<span className="font-bold">「ツール」</span>を選び、<br/>
+                      バナナのアイコン🍌 <span className="font-bold text-yellow-600">「画像を作成」</span> を押します。
+                    </p>
+                    <div className="rounded-lg overflow-hidden border shadow-sm">
+                      <img src={`${import.meta.env.BASE_URL}article_images/gemini_image_tool.png`} alt="画像作成ツール" className="w-full" />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Step 5 */}
+                <div className="flex gap-4">
+                  <div className="flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-full bg-indigo-500 text-white font-bold">5</div>
+                  <div className="space-y-2 flex-1">
+                    <h4 className={`font-bold text-lg ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>プロンプトを貼り付けて生成</h4>
                     <p className={`text-sm ${isDarkMode ? 'text-slate-400' : 'text-gray-600'}`}>
                       Geminiの入力欄に、先ほどコピーしたプロンプトを貼り付けて送信します。<br/>
-                      <span className="text-xs opacity-70">※モデルは「Gemini 2.0 Flash」や「思考モード」がおすすめです。</span>
+                      しばらくすると、グリッド画像が生成されます！
                     </p>
                   </div>
                 </div>
 
-                {/* Step 4 */}
+                {/* Step 6 */}
                 <div className="flex gap-4">
-                  <div className="flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-full bg-indigo-500 text-white font-bold">4</div>
+                  <div className="flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-full bg-indigo-500 text-white font-bold">6</div>
                   <div className="space-y-2 flex-1">
                     <h4 className={`font-bold text-lg ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>画像を保存してGifMojoへ</h4>
                     <p className={`text-sm ${isDarkMode ? 'text-slate-400' : 'text-gray-600'}`}>
