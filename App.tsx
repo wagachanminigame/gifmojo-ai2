@@ -67,6 +67,14 @@ const App: React.FC = () => {
     alert('APIキーを保存しました');
   };
 
+  const deleteApiKey = () => {
+    if (confirm('APIキーを削除しますか？')) {
+      localStorage.removeItem('gifmojo-api-key');
+      setApiKeyInput('');
+      alert('APIキーを削除しました');
+    }
+  };
+
   // Toggle dark mode
   const toggleDarkMode = () => {
     setIsDarkMode(prev => {
@@ -727,8 +735,19 @@ const App: React.FC = () => {
                  </div>
                </div>
 
-              <div className={`flex justify-center rounded-lg p-4 mb-4 ${isDarkMode ? 'bg-black/20' : 'bg-gray-100'}`}>
-                 <img ref={previewImgRef} src={generatedGif} alt="Generated GIF" className="max-w-full rounded shadow-lg" />
+              <div className={`relative rounded-lg p-4 mb-4 group ${isDarkMode ? 'bg-black/20' : 'bg-gray-100'}`}>
+                 <img ref={previewImgRef} src={generatedGif} alt="Generated GIF" className="max-w-full rounded shadow-lg mx-auto" />
+                 <button
+                   onClick={downloadGif}
+                   className="absolute bottom-6 right-6 p-3 bg-indigo-600 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-indigo-700 shadow-lg"
+                   title="ダウンロード"
+                 >
+                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                     <polyline points="7 10 12 15 17 10"></polyline>
+                     <line x1="12" y1="15" x2="12" y2="3"></line>
+                   </svg>
+                 </button>
                </div>
 
                {/* AI Features */}
@@ -847,20 +866,30 @@ const App: React.FC = () => {
               </p>
             </div>
 
-            <div className="flex justify-end gap-3">
+            <div className="flex justify-between gap-3">
               <Button 
-                variant="ghost" 
-                onClick={() => setIsApiKeyModalOpen(false)}
-                className={isDarkMode ? 'text-slate-300 hover:text-white hover:bg-slate-700' : 'text-gray-600 hover:text-gray-900'}
+                variant="danger" 
+                onClick={deleteApiKey}
+                disabled={!apiKeyInput}
+                className="text-sm"
               >
-                キャンセル
+                削除
               </Button>
-              <Button 
-                variant="primary" 
-                onClick={saveApiKey}
-              >
-                保存する
-              </Button>
+              <div className="flex gap-3">
+                <Button 
+                  variant="ghost" 
+                  onClick={() => setIsApiKeyModalOpen(false)}
+                  className={isDarkMode ? 'text-slate-300 hover:text-white hover:bg-slate-700' : 'text-gray-600 hover:text-gray-900'}
+                >
+                  キャンセル
+                </Button>
+                <Button 
+                  variant="primary" 
+                  onClick={saveApiKey}
+                >
+                  保存する
+                </Button>
+              </div>
             </div>
           </div>
         </div>
