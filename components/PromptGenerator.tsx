@@ -11,6 +11,29 @@ export const PromptGenerator: React.FC<PromptGeneratorProps> = ({ isDarkMode }) 
   const [generatedPrompt, setGeneratedPrompt] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
+  const [isInfographicCopied, setIsInfographicCopied] = useState(false);
+
+  const infographicPrompt = `3×3グリッドレイアウトのインフォグラフィック、1:1正方形比率。各タイルは〇色の背景で、[色指定]のグラデーション枠で囲まれている。メインテキストは極太の〇色から〇色へのグラデーション文字に〇色の縁取り（袋文字）。重要な数字やキーワードは超特大サイズで表示し、アクセントカラー（蛍光イエローや蛍光オレンジ）で強調。3D風の影やレイヤー効果、立体的なグラフィック要素。1枚目は特に目立つデザインでスクロールを止める工夫。[雰囲気指定]。余白部分には白を使わず、淡いグラデーションや幾何学模様、装飾要素で埋める。
+
+【1枚目/左上】[内容]、[装飾要素の指示]、余白に淡いグラデーションや模様
+
+【2枚目/中上】[内容]、[装飾要素の指示]、余白に装飾要素
+
+【3枚目/右上】[内容]、[装飾要素の指示]、余白に淡い模様
+
+【4枚目/左中】[内容]、[装飾要素の指示]、余白に装飾
+
+【5枚目/中央】[内容]、[装飾要素の指示]、余白に淡いグラデーション
+
+【6枚目/右中】[内容]、[装飾要素の指示]、余白に模様
+
+【7枚目/左下】[内容]、[装飾要素の指示]、余白に装飾要素
+
+【8枚目/中下】[内容]、[装飾要素の指示]、余白に淡いグラデーション
+
+【9枚目/右下】[内容]、余白たっぷりだが淡いグラデーションや幾何学模様で埋める、右下は空白だが装飾要素を配置
+
+全体に1→9へ繋がる矢印やラインで流れを演出。プロフェッショナルなグラフィックデザイン、Instagram映え最優先、スクロールを止めるインパクト、数字とキーワードの視覚的強調、3D効果とレイヤー感、清潔感と先進性の両立。余白には必ず淡いグラデーションや装飾要素を配置し、白い空白を作らない。`;
 
   const handleGenerate = async () => {
     if (!input.trim()) return;
@@ -33,6 +56,12 @@ export const PromptGenerator: React.FC<PromptGeneratorProps> = ({ isDarkMode }) 
     setTimeout(() => setIsCopied(false), 2000);
   };
 
+  const copyInfographicPrompt = () => {
+    navigator.clipboard.writeText(infographicPrompt);
+    setIsInfographicCopied(true);
+    setTimeout(() => setIsInfographicCopied(false), 2000);
+  };
+
   return (
     <div className={`rounded-xl p-6 border mb-8 transition-colors ${isDarkMode ? 'bg-slate-800 border-slate-700 shadow-xl' : 'bg-white border-gray-200 shadow-lg'}`}>
       <div className="flex items-center gap-2 mb-4">
@@ -44,7 +73,8 @@ export const PromptGenerator: React.FC<PromptGeneratorProps> = ({ isDarkMode }) 
         </h2>
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-6">
+        {/* Standard Generator */}
         <div>
           <label className={`block text-sm font-medium mb-2 ${isDarkMode ? 'text-slate-300' : 'text-gray-700'}`}>
             どんなGIFを作りたい？
@@ -119,6 +149,36 @@ export const PromptGenerator: React.FC<PromptGeneratorProps> = ({ isDarkMode }) 
             </div>
           </div>
         )}
+
+        {/* Infographic Prompt Preset */}
+        <div className={`pt-6 border-t ${isDarkMode ? 'border-slate-700' : 'border-gray-200'}`}>
+           <label className={`block text-sm font-medium mb-2 ${isDarkMode ? 'text-slate-300' : 'text-gray-700'}`}>
+            テンプレート: インフォグラフィック (3x3)
+          </label>
+          <div className={`p-3 rounded-lg text-xs font-mono mb-3 max-h-24 overflow-y-auto ${isDarkMode ? 'bg-slate-900/50 text-slate-400' : 'bg-gray-50 text-gray-600'}`}>
+            {infographicPrompt}
+          </div>
+          <button
+            onClick={copyInfographicPrompt}
+            className={`flex items-center gap-1.5 text-sm font-medium px-4 py-2 rounded-lg transition-colors w-full justify-center ${
+              isInfographicCopied
+                ? 'bg-green-500 text-white'
+                : isDarkMode ? 'bg-slate-700 hover:bg-slate-600 text-white' : 'bg-gray-100 hover:bg-gray-200 text-gray-900'
+            }`}
+          >
+            {isInfographicCopied ? (
+              <>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                コピーしました！
+              </>
+            ) : (
+              <>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                インフォグラフィック用プロンプトをコピー
+              </>
+            )}
+          </button>
+        </div>
       </div>
     </div>
   );

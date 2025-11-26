@@ -9,12 +9,13 @@ interface GuideModalProps {
 }
 
 export const GuideModal: React.FC<GuideModalProps> = ({ isOpen, onClose, isDarkMode, onOpenApiKeySettings }) => {
-  const [activeTab, setActiveTab] = useState<'start' | 'basic' | 'ai'>('start');
+  const [activeTab, setActiveTab] = useState<'start' | 'basic' | 'ai' | 'prompt'>('start');
 
   if (!isOpen) return null;
 
   const tabs = [
     { id: 'start', label: 'はじめに & 設定' },
+    { id: 'prompt', label: '素材作成' },
     { id: 'basic', label: '基本の使い方' },
     { id: 'ai', label: 'AI機能活用' },
   ] as const;
@@ -167,6 +168,72 @@ export const GuideModal: React.FC<GuideModalProps> = ({ isOpen, onClose, isDarkM
                         ここにフレームが追加されます
                       </div>
                     </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Tab: Prompt Creation */}
+          {activeTab === 'prompt' && (
+            <div className="space-y-8 animate-fade-in">
+              <div className={`p-6 rounded-xl border ${isDarkMode ? 'bg-indigo-900/20 border-indigo-500/30' : 'bg-indigo-50 border-indigo-100'}`}>
+                <h3 className={`text-lg font-bold mb-2 ${isDarkMode ? 'text-indigo-300' : 'text-indigo-800'}`}>
+                  🎨 Geminiで素材を作ろう！
+                </h3>
+                <p className={`${isDarkMode ? 'text-slate-300' : 'text-gray-700'}`}>
+                  GifMojo AIは、Googleの生成AI「Gemini」と連携して、GIFの素材（スプライトシート）を簡単に作ることができます。<br/>
+                  以下の手順で、誰でもハイクオリティな素材が作れます！
+                </p>
+              </div>
+
+              <div className="space-y-8">
+                {/* Step 1 */}
+                <div className="flex gap-4">
+                  <div className="flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-full bg-indigo-500 text-white font-bold">1</div>
+                  <div className="space-y-2 flex-1">
+                    <h4 className={`font-bold text-lg ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>プロンプトを生成・コピー</h4>
+                    <p className={`text-sm ${isDarkMode ? 'text-slate-400' : 'text-gray-600'}`}>
+                      「AIプロンプト作成」エリアに作りたいもののイメージ（例：「走る猫」）を入力し、「プロンプト生成」ボタンを押します。<br/>
+                      生成された英語のプロンプトをコピーします。
+                    </p>
+                  </div>
+                </div>
+
+                {/* Step 2 */}
+                <div className="flex gap-4">
+                  <div className="flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-full bg-indigo-500 text-white font-bold">2</div>
+                  <div className="space-y-2 flex-1">
+                    <h4 className={`font-bold text-lg ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Geminiを開く</h4>
+                    <p className={`text-sm ${isDarkMode ? 'text-slate-400' : 'text-gray-600'}`}>
+                      ヘッダーにある<span className="font-bold text-blue-500">「Gemini」ボタン</span>をクリックして、Google Geminiを開きます。
+                    </p>
+                    <div className="rounded-lg overflow-hidden border shadow-sm max-w-xs">
+                      <img src={`${import.meta.env.BASE_URL}article_images/gemini_button.png`} alt="Gemini Button" className="w-full" />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Step 3 */}
+                <div className="flex gap-4">
+                  <div className="flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-full bg-indigo-500 text-white font-bold">3</div>
+                  <div className="space-y-2 flex-1">
+                    <h4 className={`font-bold text-lg ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>画像を生成</h4>
+                    <p className={`text-sm ${isDarkMode ? 'text-slate-400' : 'text-gray-600'}`}>
+                      Geminiの入力欄に、先ほどコピーしたプロンプトを貼り付けて送信します。<br/>
+                      <span className="text-xs opacity-70">※モデルは「Gemini 2.0 Flash」や「思考モード」がおすすめです。</span>
+                    </p>
+                  </div>
+                </div>
+
+                {/* Step 4 */}
+                <div className="flex gap-4">
+                  <div className="flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-full bg-indigo-500 text-white font-bold">4</div>
+                  <div className="space-y-2 flex-1">
+                    <h4 className={`font-bold text-lg ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>画像を保存してGifMojoへ</h4>
+                    <p className={`text-sm ${isDarkMode ? 'text-slate-400' : 'text-gray-600'}`}>
+                      生成された画像を保存し、GifMojoの「画像分割ツール」にアップロードすれば完了です！
+                    </p>
                   </div>
                 </div>
               </div>
